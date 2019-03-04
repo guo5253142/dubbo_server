@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+ 
+ <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>file:${appHome}/env.properties</value>
+				<value>file:${appHome}/jedis.properties</value>
+				<value>file:${appHome}/dubbo_server.properties</value>
+			</list>
+		</property>
+		<property name="ignoreResourceNotFound" value="true" />
+		<property name="ignoreUnresolvablePlaceholders" value="true" />
+		<property name="properties" ref="localConfigProperties" />
+	</bean>
+
+	<bean name="localConfigProperties"
+		class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+		<property name="locations">
+			<list>
+				<value>
+					classpath:myAdminConfigDefault/env.properties
+				</value>
+				<value>
+					classpath:myAdminConfigDefault/jedis.properties
+				</value>
+				<value>
+					classpath:clientConfigDefault/dubbo_server.properties
+				</value>
+			</list>
+		</property>
+	</bean>
+	
+	 <bean id="taskExecutor"
+    	class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">  
+    	<property name="corePoolSize" value="5" />  
+        <property name="maxPoolSize" value="20" />  
+        <property name="WaitForTasksToCompleteOnShutdown" value="true" />  
+   	</bean> 
+   	
+   	<!-- <bean id="listenerAdapter" class="org.springframework.session.web.http.SessionEventHttpSessionListenerAdapter">  
+        <constructor-arg name="listeners">  
+            <list>  
+                <bean class="com.sinafenqi.admin.servlet.SessionEventListener" />  
+            </list>  
+        </constructor-arg>  
+	</bean>   -->
+   
+</beans>
