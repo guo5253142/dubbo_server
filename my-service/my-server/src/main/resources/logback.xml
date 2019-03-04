@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="65 seconds">
+
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%-16(%d{MM-dd HH:mm:ss.SSS}) %-5thread %-5level %logger - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+    <appender name="coreDefualtLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${catalina.home}/logs/coreDefualt.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${catalina.home}/logs/coreDefualt.log.%d{yyyy-MM-dd}</FileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%-16(%d{MM-dd HH:mm:ss.SSS}) %-5thread %-5level %logger - %msg%n</pattern>
+		</encoder>
+    </appender>
+    
+    <appender name="sqlLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${catalina.home}/logs/sqlLog.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${catalina.home}/logs/sqlLog.log.%d{yyyy-MM-dd}</FileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%-16(%d{MM-dd HH:mm:ss.SSS}) %-5thread %-5level %logger - %msg%n</pattern>
+		</encoder>
+    </appender>
+	   
+ 	 <logger name="mapper" level="DEBUG">  
+	    <appender-ref ref="sqlLog" />  
+	</logger> 
+	
+	<logger name="com.my.server" additivity="true">
+		<level value="info" />
+		<appender-ref ref="coreDefualtLog"/>
+	</logger>
+	<root level="info">
+		<appender-ref ref="stdout" />
+	</root>
+</configuration>  

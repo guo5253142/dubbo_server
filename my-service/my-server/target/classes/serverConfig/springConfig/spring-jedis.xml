@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+		
+	<description>redis配置</description>
+	
+	<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">  
+	    <property name="maxTotal"  value="${server.redis.maxActive}" />  
+	    <property name="maxIdle" value="${server.redis.maxIdle}" />  
+	    <property name="maxWaitMillis" value="${server.redis.maxWait}" />  
+	    <property name="testOnBorrow"  value="true"/>  
+	   <!--  <property name="maxActive"  value="50" />  
+	    <property name="maxIdle" value="10" />  
+	    <property name="maxWait" value="1000" />  
+	    <property name="testOnBorrow"  value="true"/>   -->
+	</bean>  
+	<bean id="jedisShardInfo" class="redis.clients.jedis.JedisShardInfo">  
+	    <constructor-arg index="0" value="${server.redis.ip}" />  
+	    <constructor-arg index="1" value="${server.redis.port}" type="int"/>  
+	</bean>
+	
+	<bean id="shardedJedisPool" class="redis.clients.jedis.ShardedJedisPool">  
+	    <constructor-arg index="0" ref="jedisPoolConfig" />  
+	    <constructor-arg index="1">  
+	        <list>  
+	            <ref bean="jedisShardInfo" />  
+	        </list>  
+	    </constructor-arg>  
+	</bean> 
+</beans>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="RolePermissionMapper">
+
+	<resultMap id="BaseResultMap" type="com.my.common.system.domain.RolePermission">
+		<id property="id" column="id" />
+		<result property="roleId" column="role_id" />
+		<result property="permissionId" column="permission_id" />
+		<result property="permissionItemId" column="permission_item_id" />
+	</resultMap>
+	
+	<sql id="All_Column">
+		id,role_id,permission_id,permission_item_id
+	</sql>
+	
+	<select id="queryRolePermission" parameterType="map" resultMap="BaseResultMap" >
+		select
+		<include refid="All_Column" />
+		from admin_role_permission rolePermission
+		<include refid="rolePermissionSqlCondition"/>
+		order by rolePermission.id ASC
+	</select>
+	
+	<select id="queryDistinctPermissionId" parameterType="map" resultType="Long" >
+		select
+		distinct permission_id
+		from admin_role_permission rolePermission
+		<include refid="rolePermissionSqlCondition"/>
+		order by rolePermission.permission_id ASC
+	</select>
+	
+	<select id="queryDistinctPermissionItemId" parameterType="map" resultType="Long" >
+		select
+			 permission_item_id
+		from 
+			admin_role_permission rolePermission
+		where
+			rolePermission.role_id = #{roleId}
+			and rolePermission.permission_item_id is not null
+		order by rolePermission.permission_id ASC 
+	</select>
+	
+	<insert id="saveRolePermission" parameterType="com.my.common.system.domain.RolePermission">
+		
+		insert into admin_role_permission(
+			id,role_id,permission_id,permission_item_id
+		)values (
+			nextval('adminRolePermissionSeq'),
+			#{roleId},
+			#{permissionId},
+			#{permissionItemId}
+		)
+	</insert>
+	
+	<delete id="deleteRolePermission" parameterType="map">
+		DELETE FROM admin_role_permission
+		<where>
+			<if test="id != null"> and id = #{id} </if>
+			<if test="permissionId != null"> and permission_id = #{permissionId} </if>
+			<if test="roleId != null"> and role_id = #{roleId} </if>
+			<if test="permissionItemId != null"> and permission_item_id = #{permissionItemId} </if>
+		</where>
+	</delete>
+	
+	<sql id="rolePermissionSqlCondition">
+		<where>
+			<if test="id!=null">
+				rolePermission.id = #{id}
+			</if>
+			<if test="roleId!=null">
+				and rolePermission.role_id = #{roleId}
+			</if>
+			<if test="permissionId!=null">
+				and rolePermission.permission_id = #{permissionId}
+			</if>
+			<if test="permissionItemId!=null">
+				and rolePermission.permission_item_id = #{permissionItemId}
+			</if>
+		</where>
+	</sql>
+	
+</mapper>

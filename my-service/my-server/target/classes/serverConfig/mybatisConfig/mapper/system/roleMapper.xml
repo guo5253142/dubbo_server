@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="RoleMapper">
+
+	<resultMap id="BaseResultMap" type="com.my.common.system.domain.Role">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="remark" column="remark" />
+	</resultMap>
+	<sql id="All_Column">
+		id,name,remark
+	</sql>
+
+	<select id="getRole" parameterType="map" resultMap="BaseResultMap" >
+		select
+		<include refid="All_Column" />
+		from admin_role role
+		where 1=1 
+		<if test="name != null and name !=''">
+			and name=#{name}
+		</if>
+		<if test="id != null">
+			and id=#{id}
+		</if>
+	</select>
+	
+	<select id="queryRoleForPage" parameterType="map" resultMap="BaseResultMap">
+		 select
+        <include refid="All_Column"/>
+       	 from admin_role role  
+       	 <include refid="roleSqlCondition"/>
+       	 order by id limit #{startIndex} ,#{pageSize}
+	</select>
+	
+	<select id="countRoleForPage" parameterType="map" resultType="int">
+		select count(1) 
+		from admin_role role
+		<include refid="roleSqlCondition"/>
+	</select>
+	
+	<insert id="saveRole" parameterType="com.my.common.system.domain.Role" useGeneratedKeys="true">
+	 <selectKey resultType="long" keyProperty="id" order="BEFORE">
+	 select nextval('adminRoleSeq') as id
+	 </selectKey>
+		insert into admin_role(
+			id,name,remark
+		)values (
+			#{id},
+			#{name},
+			#{remark}
+		)
+	</insert>
+	
+	<update id="updateRole" parameterType="com.my.common.system.domain.Role">
+		update admin_role
+			set
+				name = #{name},
+				remark = #{remark}
+		where id = #{id}
+	</update>
+	
+	<delete id="deleteRole" parameterType="long">
+		delete from admin_role where id = #{id}
+	</delete>
+	
+	<sql id="roleSqlCondition">
+		<where>
+			<if test="id!=null">
+				role.id = #{id}
+			</if>
+			<if test="name!=null and name !=''">
+				and role.name  = #{name}
+			</if>
+		</where>
+	</sql>
+	
+</mapper>

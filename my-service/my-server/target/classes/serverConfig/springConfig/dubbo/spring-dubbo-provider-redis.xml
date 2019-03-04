@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-autowire="byName"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+       ">
+    <!--发布服务-->
+    <description>dubbo service provider-memer</description>
+
+    <!--JedisService-->
+    <dubbo:service interface="com.my.common.redis.service.JedisService"
+                   ref="jedisServiceImpl"
+                   version="1.0.0"
+                   owner="guopeng"/>
+    
+   
+</beans>

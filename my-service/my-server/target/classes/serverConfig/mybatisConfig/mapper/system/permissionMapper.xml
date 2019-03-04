@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="PermissionMapper">
+
+	<resultMap id="BaseResultMap" type="com.my.common.system.domain.Permission">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="actionName" column="action_name" />
+		<result property="methodName" column="method" />
+		<result property="loadDataMethodName" column="load_data_method" />
+		<result property="paramName" column="param_name" />
+		<result property="paramValue" column="param_value" />
+		<result property="menuUrl" column="menu_url" />
+		<result property="moduleId" column="module_id" />
+		<result property="orderIndex" column="order_index" />
+		<result property="moduleName" column="module_name" />
+		<result property="isMenu" column="is_menu" />
+		
+	</resultMap>
+	<sql id="All_Column">
+		id,name,action_name,load_data_method,method,param_name,param_value,menu_url,module_id,order_index,is_menu
+	</sql>
+	<select id="getPermission" parameterType="map" resultMap="BaseResultMap" >
+		select
+		<include refid="All_Column" />
+		from admin_permission permission
+		<include refid="permissionSqlCondition"/>
+		order by permission.order_index ASC
+	</select>
+	<select id="queryPermissionByIdSet" parameterType="map" resultMap="BaseResultMap">
+	    select
+		<include refid="All_Column" />
+		from admin_permission permission
+		where id  in 
+		<foreach  collection="idList" open="(" close=")" item="id" separator=",">
+			#{id}
+		</foreach> 
+		order by permission.order_index ASC
+	</select>
+	<select id="queryPermissionForPage" parameterType="map" resultMap="BaseResultMap">
+		select
+		permission.id,permission.name,permission.action_name,permission.method, permission.load_data_method,permission.param_name,permission.param_value,
+		permission.menu_url,permission.module_id,permission.order_index,apm.name module_name,permission.is_menu
+		from admin_permission permission
+		left join admin_permission_module apm on apm.id=permission.module_id
+		<include refid="permissionSqlCondition"/>
+		ORDER BY permission.module_id,permission.order_index ASC
+		limit #{startIndex} ,#{pageSize}		
+	</select>
+	
+	<select id="countPermissionForPage" parameterType="map" resultType="int">
+		select count(1) 
+		from admin_permission permission
+		left join admin_permission_module apm on apm.id=permission.module_id
+		<include refid="permissionSqlCondition"/>
+	</select>
+	
+	<insert id="savePermission" parameterType="com.my.common.system.domain.Permission">
+	
+		insert into admin_permission(
+			id,name,action_name,load_data_method,method,param_name,param_value,is_menu,menu_url,module_id,order_index
+		)values (
+			nextval('adminPermissionSeq'),
+			#{name},
+			#{actionName},
+			#{loadDataMethodName},
+			#{methodName},
+			#{paramName},
+			#{paramValue},
+			#{isMenu},
+			#{menuUrl},
+			#{moduleId},
+			#{orderIndex}
+		)
+	</insert>
+	
+	<update id="updatePermission" parameterType="com.my.common.system.domain.Permission">
+		update admin_permission
+			set
+				name = #{name},
+				action_name = #{actionName},
+				load_data_method = #{loadDataMethodName},
+				method = #{methodName},
+				param_name = #{paramName},
+				param_value = #{paramValue},
+				is_menu = #{isMenu},
+				menu_url = #{menuUrl},
+				module_id = #{moduleId},
+				order_index = #{orderIndex}
+		where id = #{id}
+	</update>
+	
+	<delete id="deletePermissionById" parameterType="long">
+		delete from admin_permission where id = #{id}
+	</delete>	
+	
+	<select id="getMaxOrderIndex" resultType="long">
+		select max(order_index) from admin_permission 
+	</select>
+	
+	<update id="updatePermissionOrderIndex" parameterType="com.my.common.system.domain.Permission">
+		update admin_permission
+			set
+				order_index = #{orderIndex}
+		where id = #{id}
+	</update>
+	
+	<sql id="permissionSqlCondition">
+		<where>
+			<if test="id!=null">
+				permission.id = #{id}
+			</if>
+			<if test="name!=null and name !=''">
+				and permission.name  like '%${name}%'
+			</if>
+			<if test="actionName!=null and actionName !=''">
+				and permission.action_name  like '%${actionName}%'
+			</if>
+			<if test="moduleId != null">
+				and permission.module_id  = #{moduleId}
+			</if>
+			<if test="isMenu != null">
+				and permission.is_menu  = #{isMenu}
+			</if>
+			
+		</where>
+	</sql>
+	
+</mapper>

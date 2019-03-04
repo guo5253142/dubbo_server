@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+       ">
+    <description>dubbo server端配置</description>
+
+    
+    <!-- Application name -->
+    <dubbo:application id="myService"
+                       name="${myService.dubbo.application.name}"
+                       owner="${myService.dubbo.application.owner}"
+                       organization="${myService.dubbo.application.organization}"
+                       logger="slf4j"
+                       compiler="javassist"/>
+
+    <!--协议-->
+    <dubbo:protocol id="myServiceProtocol"
+                    name="${myService.dubbo.protocol.name}"
+                    port="-1"
+                    dispatcher="${myService.dubbo.protocol.dispatcher}"
+                    threadpool="${myService.dubbo.protocol.threadpool}"
+                    threads="${myService.dubbo.protocol.threads}">
+    </dubbo:protocol>
+
+    <!--注册中心-->
+    <dubbo:registry id="myServiceRegistry"
+                    protocol="${myService.dubbo.registry.name}"
+                    address="${myService.dubbo.registry.address}"
+                    client="${myService.dubbo.registry.client}"
+                    group="dubboservice/myService/${myService.dubbo.registry.group}"
+                    session="60000"
+                    register="true"
+                    subscribe="false"
+                    check="true" file="${catalina.home}/temp/myService-registry-cache.properties">
+    </dubbo:registry>
+
+    <!--服务-->
+    <dubbo:provider id="myServiceProvider"
+                    application="myService"
+                    registry="myServiceRegistry"
+                    protocol="myServiceProtocol"
+                    cluster="${myService.dubbo.provider.cluster}"
+                    loadbalance="${myService.dubbo.provider.loadbalance}"
+                    serialization="${myService.dubbo.provider.serialization}"
+                    retries="${myService.dubbo.provider.retries}"
+                    timeout="${myService.dubbo.provider.timeout}"
+                    proxy="javassist"
+                    delay="-1"
+                    >
+    </dubbo:provider>
+</beans>

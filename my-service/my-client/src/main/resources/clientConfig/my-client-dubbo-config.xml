@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <description>sinafenqiService dubbo client</description>
+    <dubbo:registry id="myServiceClientRegistry"
+                    protocol="${myService.dubbo.registry.name}"
+                    client="${myService.dubbo.registry.client}"
+                    address="${myService.dubbo.registry.address}"
+                    group="dubboservice/myService/${myService.dubbo.registry.group}"
+                    check="${myService.dubbo.consumer.check}"
+                    subscribe="true" file="${catalina.home}/temp/myServiceclient-registry-cache.properties">
+    </dubbo:registry>
+
+    <dubbo:consumer id="myServiceConsumer"
+                    registry="myServiceClientRegistry"
+                    init="false"
+                    check="${myService.dubbo.consumer.check}"
+                    timeout="${myService.dubbo.consumer.timeout}"
+                    retries="0"/>
+                    
+</beans>

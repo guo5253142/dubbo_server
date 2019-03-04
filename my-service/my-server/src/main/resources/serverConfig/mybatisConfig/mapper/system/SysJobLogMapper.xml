@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="SysJobLogMapper" >
+  <resultMap id="BaseResultMap" type="com.my.common.system.domain.SysJobLog" >
+    <result column="excute_class_name" property="excuteClassName" />
+    <result column="begin_time" property="beginTime" />
+    <result column="end_time" property="endTime" />
+    <result column="run_millisecond" property="runMillisecond" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    excute_class_name, begin_time, end_time, run_millisecond
+  </sql>
+  
+  <insert id="insert" parameterType="com.my.common.system.domain.SysJobLog" >
+    insert into sys_job_log (excute_class_name, begin_time, end_time, run_millisecond)
+    values (#{excuteClassName}, #{beginTime}, #{endTime},#{runMillisecond})
+  </insert>
+  
+</mapper>

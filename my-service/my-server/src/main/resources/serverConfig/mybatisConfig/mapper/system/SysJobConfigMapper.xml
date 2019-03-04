@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="SysJobConfigMapper" >
+  <resultMap id="BaseResultMap" type="com.my.common.system.domain.SysJobConfig" >
+    <result column="name" property="name" />
+    <result column="excute_class_name" property="excuteClassName" />
+    <result column="cron" property="cron" />
+    <result column="owner" property="owner" />
+    <result column="owner_phone" property="ownerPhone" />
+    <result column="creator" property="creator" />
+    <result column="create_date" property="createDate" />
+    <result column="editor" property="editor" />
+    <result column="edit_date" property="editDate" />
+    <result column="used_tag" property="usedTag" />
+    <result column="remark" property="remark" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    name, excute_class_name, cron, owner, owner_phone, creator, create_date, editor, 
+    edit_date, used_tag, remark
+  </sql>
+   <select id="querySysJobConfigList" resultMap="BaseResultMap" parameterType="map" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_job_config order by used_tag, cron
+  </select>
+  <insert id="insert" parameterType="com.my.common.system.domain.SysJobConfig" >
+    insert into sys_job_config (name, excute_class_name, cron, owner, owner_phone, creator, 
+      create_date, editor, edit_date, used_tag, remark)
+    values (#{name}, #{excuteClassName}, #{cron}, #{owner}, #{ownerPhone}, #{creator}, 
+      #{createDate}, #{editor}, #{editDate}, #{usedTag}, #{remark})
+  </insert>
+  
+  <update id="updateSysJobConfig" parameterType="com.my.common.system.domain.SysJobConfig">
+  	update sys_job_config set excute_class_name=#{excuteClassName}
+  	<if test="cron !=null and cron !=''">
+  	,cron=#{cron}
+  	</if>
+  	 where excute_class_name=#{excuteClassName}
+  </update>
+  
+</mapper>

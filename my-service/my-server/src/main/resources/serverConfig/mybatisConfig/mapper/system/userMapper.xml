@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="UserMapper">
+
+    <resultMap id="BaseResultMap" type="com.my.common.system.domain.User">
+        <id property="id" column="id"/>
+        <result property="account" column="account"/>
+        <result property="password" column="password"/>
+        <result property="name" column="name"/>
+        <result property="status" column="status"/>
+        <result property="lastLoginTime" column="last_login_time"/>
+        <result property="createDate" column="create_date"/>
+        <association property="role" column="{id=id}"  select="UserMapper.getUserRole" javaType="com.my.common.system.domain.Role" />
+    </resultMap>
+    <sql id="All_Column">
+		id,account,password,name,status,last_login_time,create_date
+	</sql>
+	
+	<insert id="insert" parameterType="com.my.common.system.domain.User" useGeneratedKeys="true">
+	 <selectKey resultType="long" keyProperty="id" order="BEFORE">
+	 select nextval('adminUserSeq') as id
+	 </selectKey>
+		insert into admin_user(id,account,password,name,status,used_tag,creator,create_date)
+		values(#{id},#{account},#{password},#{name},#{status},#{usedTag},#{creator},#{createDate})
+	</insert>
+	
+	<insert id="insertUserRole" parameterType="com.my.common.system.domain.User">
+		insert into admin_user_role(id,user_id,role_id,used_tag,creator,create_date)
+		values(nextval('adminUserRoleSeq'),#{id},#{roleId},#{usedTag},#{creator},#{createDate})
+	</insert>
+	
+	<delete id="deleteUserRole" parameterType="com.my.common.system.domain.User">
+		delete from admin_user_role where user_id=#{id}
+	</delete>
+	
+	<select id="getUserRole" parameterType="com.my.common.system.domain.User" resultType="com.my.common.system.domain.Role">
+		select ar.name,ar.id from admin_user_role aur inner join admin_role ar on ar.id=aur.role_id and aur.user_id=#{id} limit 1
+	</select>
+	
+	<select id="queryUserForPage" parameterType="map" resultMap="BaseResultMap">
+		 select
+        <include refid="All_Column"/>
+       	 from admin_user au  
+       	 <include refid="query_condition"></include>
+       	 order by id limit #{startIndex} ,#{pageSize}
+	</select>
+	
+	<sql id="query_condition">
+		where 1=1
+		<if test="id !=null">
+			and id=#{id}
+		</if>
+		<if test="account !=null and account !=''">
+			and account=#{account}
+		</if>
+		<if test="name !=null and name !=''">
+			and name=#{name}
+		</if>
+		<if test="roleId !=null">
+			and exists (select 1 from admin_user_role where user_id=au.id and role_id=#{roleId})
+		</if>
+		
+	</sql>
+	
+	 <select id="countUserForPage" parameterType="map" resultType="int">
+	  select count(1) from admin_user au
+       	 <include refid="query_condition"></include>
+	 </select>
+	
+
+    <select id="queryAllUserList" parameterType="map" resultMap="BaseResultMap">
+         select
+        <include refid="All_Column"/>
+        from admin_user
+        
+    </select>
+    
+    <update id="update" parameterType="com.my.common.system.domain.User">
+		update admin_user
+			set id = #{id}
+			<if test="password !=null and password !=''">
+				,password = #{password}
+			</if>
+			<if test="name !=null and name !=''">
+				,name = #{name}
+			</if>
+			<if test="lastLoginTime !=null">
+				,last_login_time = #{lastLoginTime}
+			</if>
+			<if test="status !=null">
+				,status = #{status}
+			</if>
+		where id = #{id}
+	</update>
+    
+    
+    <select id="getUserByAccount" parameterType="map" resultMap="BaseResultMap">
+	    select  <include refid="All_Column"/> 
+	    from admin_user where 1=1
+	    <if test="account !=null and account!=''">
+	    	and account=#{account}
+	    </if>
+    </select>
+    
+    <select id="getPermissionList" parameterType="map" resultType="com.my.common.system.domain.Permission">
+    	select id,name,action_name actionName,method methodName,load_data_method loadDataMethodName,param_name paramName,param_value paramValue,
+    	menu_url menuUrl,module_id moduleId, order_index orderIndex,is_menu isMenu
+    	 from admin_permission where id in(
+			select distinct arp.permission_id from admin_user_role aur
+			inner join admin_role_permission arp on arp.role_id=aur.role_id
+			where aur.user_id=#{userId}
+		) order by order_index
+    </select>
+   
+
+	<select id="getPermissionItemList" parameterType="map" resultType="com.my.common.system.domain.PermissionItem">
+	    	select id,permission_id permissionId,name,method_value1 methodValue1,method_value2 methodValue2 
+	    	from admin_permission_item where id in(
+				select distinct arp.permission_item_id from admin_user_role aur
+				inner join admin_role_permission arp on arp.role_id=aur.role_id
+				where aur.user_id=#{userId}
+			) 
+    </select>
+    
+    
+    <delete id="delete" parameterType="com.my.common.system.domain.User">
+    	delete from admin_user where id=#{id}
+    </delete>
+    
+    <select id="get" parameterType="com.my.common.system.domain.User" resultMap="BaseResultMap">
+    	select <include refid="All_Column"/>
+    	from admin_user au where 1=1
+    	<if test="id !=null">
+    		and au.id=#{id}
+    	</if>
+    </select>
+</mapper>

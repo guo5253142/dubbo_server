@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="ModuleMapper">
+
+	<resultMap id="BaseResultMap" type="com.my.common.system.domain.Module">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="remark" column="remark" />
+		<result property="orderIndex" column="order_index" />
+	</resultMap>
+	<sql id="All_Column">
+		id,name,remark,order_index
+	</sql>
+
+	<select id="getModule" parameterType="map" resultMap="BaseResultMap" >
+		SELECT
+		<include refid="All_Column" />
+		FROM admin_permission_module module
+		<include refid="moduleSqlCondition"/>
+		order by module.order_index asc
+	</select>
+	<select id="queryModuleByIdSet" parameterType="map" resultMap="BaseResultMap">
+	         SELECT
+		<include refid="All_Column" />
+		FROM admin_permission_module module
+		WHERE id  in 
+		<foreach  collection="idList" open="(" close=")" item="s" separator=",">
+			#{s}
+		</foreach> 
+		order by module.order_index asc
+	</select>
+	<select id="queryModuleForPage" parameterType="map" resultMap="BaseResultMap">
+		SELECT
+			<include refid="All_Column" />
+		FROM admin_permission_module module
+			<include refid="moduleSqlCondition"/>
+		ORDER BY module.order_index limit #{startIndex} ,#{pageSize}
+		
+	</select>
+	
+	<select id="countModuleForPage" parameterType="map" resultType="int">
+		SELECT COUNT(1) 
+		FROM admin_permission_module module
+		<include refid="moduleSqlCondition"/>
+	</select>
+	
+	<delete id="deleteModule" parameterType="map">
+		DELETE FROM admin_permission_module WHERE id = #{id}
+	</delete>
+	
+	<insert id="saveModule" parameterType="com.my.common.system.domain.Module">
+	
+		INSERT INTO admin_permission_module(id,
+			name,remark,order_index
+		)VALUES (
+			nextval('adminPermissionModuleSeq'),
+			#{name},
+			#{remark},
+			#{orderIndex}
+		)
+	</insert>
+	
+	<update id="updateModule" parameterType="com.my.common.system.domain.Module">
+		UPDATE admin_permission_module
+			SET
+				name = #{name},
+				remark = #{remark},
+				order_index = #{orderIndex}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateModuleSortIndex" parameterType="com.my.common.system.domain.Module">
+		UPDATE admin_permission_module
+			SET
+				order_index = #{orderIndex}
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getMaxSortIndex" resultType="long">
+		select max(order_index) from admin_permission_module 
+	</select>
+	
+	<sql id="moduleSqlCondition">
+		<where>
+			<if test="id!=null">
+				module.id = #{id}
+			</if>
+			<if test="name!=null and name!=''">
+				and module.name  = #{name}
+			</if>
+			
+		</where>
+	</sql>
+	
+</mapper>

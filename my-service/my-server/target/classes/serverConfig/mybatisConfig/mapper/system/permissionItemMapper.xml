@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="PermissionItemMapper">
+
+	<resultMap id="BaseResultMap" type="com.my.common.system.domain.PermissionItem">
+		<id property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="permissionId" column="permission_id" />
+		<result property="methodValue1" column="method_value1" />
+		<result property="methodValue2" column="method_value2" />
+	</resultMap>
+	<sql id="All_Column">
+		id,name,permission_id,method_value1,method_value2
+	</sql>
+	<select id="queryPermissionItem" parameterType="map" resultMap="BaseResultMap" >
+		select
+		<include refid="All_Column" />
+		from admin_permission_item permissionItem
+		<include refid="permissionItemSqlCondition"/>
+		order by permissionItem.id ASC
+	</select>
+	<select id="queryPermissionItemByIdSet" parameterType="map" resultMap="BaseResultMap">
+	select
+		<include refid="All_Column" />
+		from admin_permission_item permissionItem
+		where id  in 
+		<foreach  collection="idList" open="(" close=")" item="s" separator=",">
+			#{s}
+		</foreach> 
+	</select>
+	
+	<insert id="savePermissionItem" parameterType="com.my.common.system.domain.PermissionItem">
+	
+		insert into admin_permission_item(
+			id,name,permission_id,method_value1,method_value2
+		)values (
+			nextval('adminPermissionItemSeq'),
+			#{name},
+			#{permissionId},
+			#{methodValue1},
+			#{methodValue2}
+		)
+	</insert>
+	
+	<update id="updatePermissionItem" parameterType="com.my.common.system.domain.PermissionItem">
+		update admin_permission_item
+			set
+				name = #{name},
+				method_value1 = #{methodValue1},
+				method_value2 = #{methodValue2}
+		where id = #{id}
+	</update>
+	
+	<delete id="deletePermissionItem" parameterType="map">
+		DELETE FROM admin_permission_item where id = #{id}
+	</delete>
+	
+	
+	<delete id="delPermissionItemByIds" parameterType="map">
+		DELETE FROM admin_permission_item where id in
+		<foreach collection="ids" index="index" item="item" separator="," open="(" close=")" >
+			 #{item}
+		</foreach>
+		
+	</delete>
+	
+	
+	<sql id="permissionItemSqlCondition">
+		<where>
+			<if test="id!=null">
+				permissionItem.id = #{id}
+			</if>
+			<if test="name!=null">
+				and permissionItem.name  = #{name}
+			</if>
+			<if test="permissionId!=null">
+				and permissionItem.permission_id = #{permissionId}
+			</if>
+		</where>
+	</sql>
+	
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans default-autowire="byName"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+       ">
+    <!--发布服务-->
+    <description>dubbo service provider-memer</description>
+
+    <!--system-->
+    <dubbo:service interface="com.my.common.system.service.UserService" ref="userServiceImpl" version="1.0.0" owner="guopeng"/>
+    <dubbo:service interface="com.my.common.system.service.RoleService" ref="roleServiceImpl" version="1.0.0" owner="guopeng"/>
+    <dubbo:service interface="com.my.common.system.service.ModuleService" ref="moduleServiceImpl" version="1.0.0" owner="guopeng"/>
+    <dubbo:service interface="com.my.common.system.service.RolePermissionService" ref="rolePermissionServiceImpl" version="1.0.0" owner="guopeng"/>
+    <dubbo:service interface="com.my.common.system.service.PermissionService" ref="permissionServiceImpl" version="1.0.0" owner="guopeng"/>
+    <dubbo:service interface="com.my.common.system.service.PermissionItemService" ref="permissionItemServiceImpl" version="1.0.0" owner="guopeng"/>
+    <dubbo:service interface="com.my.common.system.service.SysJobConfigService" ref="sysJobConfigServiceImpl" version="1.0.0" owner="guopeng"/>
+    <dubbo:service interface="com.my.common.system.service.SysJobLogService" ref="sysJobLogServiceImpl" version="1.0.0" owner="guopeng"/>              
+                   
+     <dubbo:service interface="com.my.common.common.service.JmsProducerService"
+                   ref="jmsProducerServiceImpl"
+                   version="1.0.0"
+                   owner="guopeng"/>
+   
+</beans>

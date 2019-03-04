@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://code.alibabatech.com/schema/dubbo
+       http://code.alibabatech.com/schema/dubbo/dubbo.xsd
+       ">
+
+    <!--system-->
+      <dubbo:reference id="userService" interface="com.my.common.system.service.UserService" version="1.0.0" consumer="myServiceConsumer" />
+      <dubbo:reference id="roleService" interface="com.my.common.system.service.RoleService" version="1.0.0" consumer="myServiceConsumer" />
+      <dubbo:reference id="moduleService" interface="com.my.common.system.service.ModuleService" version="1.0.0" consumer="myServiceConsumer" />  
+      <dubbo:reference id="rolePermissionService" interface="com.my.common.system.service.RolePermissionService" version="1.0.0" consumer="myServiceConsumer" />  
+      <dubbo:reference id="permissionService" interface="com.my.common.system.service.PermissionService" version="1.0.0" consumer="myServiceConsumer" />
+      <dubbo:reference id="permissionItemService" interface="com.my.common.system.service.PermissionItemService" version="1.0.0" consumer="myServiceConsumer" />  
+      <dubbo:reference id="sysJobConfigService" interface="com.my.common.system.service.SysJobConfigService" version="1.0.0" consumer="myServiceConsumer" />              
+      <dubbo:reference id="sysJobLogService" interface="com.my.common.system.service.SysJobLogService" version="1.0.0" consumer="myServiceConsumer" />              
+                
+      <dubbo:reference id="jmsProducerService" interface="com.my.common.common.service.JmsProducerService" version="1.0.0" consumer="myServiceConsumer" />
+    
+</beans>

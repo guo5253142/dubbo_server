@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="65 seconds">
+
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%-16(%d{MM-dd HH:mm:ss.SSS}) %-5thread %-5level %logger{1} - %msg%n</pattern>
+		</encoder>
+	</appender>
+
+    <appender name="asynchLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${catalina.home}/logs/asynchLog.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<FileNamePattern>${catalina.home}/logs/asynchLog.log.%d{yyyy-MM-dd}</FileNamePattern>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%-16(%d{MM-dd HH:mm:ss.SSS}) %-5thread %-5level %logger{1} - %msg%n</pattern>
+		</encoder>
+    </appender>
+	<logger name="com.my.asynch" additivity="true">
+		<level value="INFO" />
+		<appender-ref ref="asynchLog"/>
+	</logger>
+	<root level="info">
+		<appender-ref ref="stdout" />
+	</root>
+</configuration>  

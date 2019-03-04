@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/tx
+		http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+	<!-- 数据源 oracle -->
+	<!-- <bean name="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		Connection Pooling Info
+		<property name="initialSize" value="10" />连接池初始化时创建的连接数。
+		<property name="maxActive" value="50" />连接池中保留的最大连接数。Default: 8
+		<property name="maxIdle" value="30" />最大的空闲连接数，取值应在initialSize与maxActive之间。Default: 0
+		<property name="minIdle" value="20" />最小空闲的连接数,30个。default:0
+		配置获取连接等待超时的时间
+		<property name="maxWait" value="10000" />
+		配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+		<property name="timeBetweenEvictionRunsMillis" value="30000" />
+
+		配置一个连接在池中最小生存的时间，单位是毫秒
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+                
+        oracle必须这样配置检查，不了会报检查错误
+		<property name="validationQuery" value="SELECT 1 FROM DUAL" />
+		<property name="testWhileIdle" value="true" />
+		<property name="testOnBorrow" value="false" />
+		<property name="testOnReturn" value="false" />
+		
+		以下三项针对没有close入池的连接，考虑到目前统一管理，应该不会出现这样的情况
+		<property name="removeAbandoned" value="true" />
+		<property name="removeAbandonedTimeout" value="60" />
+		<property name="logAbandoned" value="true" />
+	</bean> -->
+	
+	<bean name="dataSource" class="com.alibaba.druid.pool.DruidDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${jdbc.driverClassName}" />
+		<property name="url" value="${jdbc.url}" />
+		<property name="username" value="${jdbc.username}" />
+		<property name="password" value="${jdbc.password}" />
+		<!-- Connection Pooling Info -->
+		<property name="initialSize" value="10" /><!--连接池初始化时创建的连接数。 -->
+		<property name="maxActive" value="50" /><!--连接池中保留的最大连接数。Default: 8 -->
+		<property name="maxIdle" value="30" /><!--最大的空闲连接数，取值应在initialSize与maxActive之间。Default: 0 -->
+		<property name="minIdle" value="20" /><!--最小空闲的连接数,30个。default:0 -->
+		<!-- 配置获取连接等待超时的时间 -->
+		<property name="maxWait" value="10000" />
+		<!-- 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 -->
+		<property name="timeBetweenEvictionRunsMillis" value="30000" />
+
+		<!-- 配置一个连接在池中最小生存的时间，单位是毫秒 -->
+		<property name="minEvictableIdleTimeMillis" value="300000" />
+       
+	</bean>
+
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="mapperLocations" value="classpath:/serverConfig/mybatisConfig/mapper/**/*.xml" />
+		<property name="configLocation" value="classpath:/serverConfig/mybatisConfig/mybatis-configuration.xml" />
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<!-- spring的事务管理器 -->
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<!-- 开启注解事务 -->
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	
+	<bean name="mybatisTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+		<constructor-arg ref="sqlSessionFactory" />
+	</bean>
+	
+	<!-- 用于编程式事务 -->
+	<bean name="transactionTemplate"
+		class="org.springframework.transaction.support.TransactionTemplate">
+		<property name="transactionManager" ref="transactionManager" />
+	</bean>
+	
+	<!-- Dao -->
+	<bean name="adminDbDao" class="com.my.server.common.dao.GenericMybatisDao">
+		<property name="mybatisTemplate" ref="mybatisTemplate"></property>
+	</bean>
+</beans>
+
+
