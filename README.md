@@ -1,6 +1,6 @@
 此项目采用的框架有：springmvc+mybatis+redis+dubbo+zookeeper+quartz+layui
 my-service文件结构：
-1、my-server工程是提供server的，负责处理数据库相关的操作，最终打成war包。
+1、my-server工程是提供server的，负责处理数据库相关的操作（使用mysql），最终打成war包。
 2、my-common工程存放一些公共常量、方法及接口等代码，最终会打成jar包。
 3、my-client工程存放连接dubbo服务的配置参数，供客户端使用，最终打成jar包。
 
